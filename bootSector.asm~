@@ -22,7 +22,6 @@
     jmp $
     ;;Include
     include 'print_string.asm'
-	include 'print_hex.asm'
 
 msg1:   db 'WHO IS THE IMPOSTOR????????', 0xA, 0xD, 0
 msg2:   db 'THE IMPOSTOR IS', 0xA, 0xD, 0
