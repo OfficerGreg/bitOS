@@ -1,5 +1,7 @@
 print_string:
     pusha	;; store all register values onto stack               
+    mov ah, 0x0e
+
 
 print_char:
 	mov al, [bx]

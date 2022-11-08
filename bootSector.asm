@@ -11,21 +11,23 @@
     mov bl, 0x01
     int 0x10
 
-    mov ah, 0x0e
     mov bx, msg1
 
     call print_string
     mov bx, msg2
     call print_string
     
+    mov dx, 0x12AB  ;hex num to print
+    call print_hex
+
     ;;end_pgm
     jmp $
     ;;Include
     include 'print_string.asm'
 	include 'print_hex.asm'
 
-msg1:   db 'WHO IS THE IMPOSTOR????????', 0xA, 0xD, 0
-msg2:   db 'THE IMPOSTOR IS', 0xA, 0xD, 0
+msg1:   db 'Char Test: Testing', 0xA, 0xD, 0
+msg2:   db 'Hex Test:', 0
 
 
 
