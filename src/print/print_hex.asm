@@ -14,10 +14,10 @@ hex_loop:
     and ax, 0x000F
     add al, 0x30
     cmp al, 0x39    ;is hex value 0-9?
-    jle move_intoBx
+    jle move_intoBX
     add al, 0x7
 
-move_intoBx:
+move_intoBX:
     mov bx, hexString + 5
     sub bx, cx
     mov [bx], al
