@@ -4,14 +4,14 @@
 
 print_hex:
     pusha           ;save all registers
-    mov cx, 0   
+    xor cx, cx
 
 hex_loop:
     cmp cx, 4       ;
-    je end_hex_loop
+    je end_hexloop
     ;;Convert DX HEX to ASCII
     mov ax, dx
-    and ax, 0x000F
+    and ax, 0x000F  ;turn 1st 3 hex to 0, keep final digit to convert
     add al, 0x30
     cmp al, 0x39    ;is hex value 0-9?
     jle move_intoBX
@@ -26,8 +26,8 @@ move_intoBX:
     add cx, 1
     jmp hex_loop            ;loop next digit
 
-end_hex_loop:
-    mov bx, hexString
+end_hexloop:
+    mov si, hexString
     call print_string
 
     popa            ;restore all registers

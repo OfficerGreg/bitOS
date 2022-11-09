@@ -16,11 +16,11 @@
 read_disk1:
     mov ah, 0x02
     mov al, 0x01
-    int 0x13
+    int 0x13            ;BIOS interrupt
 
-    jc read_disk1
+    jc read_disk1       ;retry if disk read error
 
-    mov bx, 0x2000
+    mov bx, 0x2000      ;load secotr to memory address 0x2000
     mov es, bx
     mov bx, 0x0
 
@@ -32,7 +32,7 @@ read_disk1:
 
 read_disk2:
     mov ah, 0x02
-    mov al, 0x01
+    mov al, 0x02        ;numbers of sectors to read
     int 0x13
 
     jc read_disk2
@@ -46,7 +46,7 @@ read_disk2:
     mov gs, ax
     mov ss, ax
 
-    jmp 0x2000:0x0
+    jmp 0x2000:0x0000
 
     times 510-($-$$) db 0
 

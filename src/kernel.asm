@@ -1,22 +1,14 @@
 ;;KERNEL
 ;;
-    ;;Set video mode
-    mov ah, 0x00
-    mov al, 0x02
-    int 0x10
-    ;;Set/Change Color
-    mov ah, 0x0B
-    mov bh, 0x00
-    mov bl, 0x01
-    int 0x10
 
     ;;Print menu heading
+main_menu:
+    call reset_text_screen
+
     mov si, menu_string  ;hex num to print
     call print_string
 
     ;;Get user input
-    push di             ;store si on stack
-
 get_input:
     mov di, cmd_string
 
@@ -37,8 +29,12 @@ exec_command:
     mov al, [cmd_string]
     cmp al, 'F'         ;file table command
     je file_browser
-    cmp al, 'R'    
-    je reboot          ;'warm' reboot
+    cmp al, 'R'         ;'warm' reboot
+    je reboot     
+    cmp al, 'P'         ;print register value
+    je print_register
+    cmp al, 'G'
+    je graphics_test
     cmp al, 'N'         ;cpu halt
     je end_program
     mov si, error
@@ -47,15 +43,7 @@ exec_command:
 
 file_browser:
     ;;Reset screen
-    ;;Set video mode
-    mov ah, 0x00
-    mov al, 0x02
-    int 0x10
-    ;;Set/Change Color
-    mov ah, 0x0B
-    mov bh, 0x00
-    mov bl, 0x01
-    int 0x10
+    call reset_text_screen
 
     mov si, file_table_header
     call print_string
@@ -100,35 +88,80 @@ next_element:
     jmp file_table_loop
 
 stop:
-    hlt
+    mov si, go_back
+    call print_string
+
+    mov ah, 0x00
+    int 0x16        ; get keystroke
+    jmp main_menu
 
 reboot:
     jmp 0xFFFF:0x0000
+
+print_register:
+    call reset_text_screen
+    ;;print register values
+    mov si, register_header
+    call print_string
+
+    call print_registers
+
+    mov si, go_back
+    call print_string
+    mov ah, 0x00
+    int 0x16
+    jmp main_menu
+ 
+ ;;graphics mode test
+graphics_test:
+    call reset_graphics_screen
+
+    ;;Square
+    mov ah, 0x0C    ;gfx pixel
+    mov al, 0x01    ;color
+    mov bh, 0x00    ;page nr.
+
+    mov cx, 100    ;column
+    mov dx, 100   ;row
+    int 0x10
+
+square_loop:
+    inc cx
+    int 0x10
+    cmp cx, 150
+    jne square_loop
+
+    ;Go down 1 row
+    inc dx
+    int 0x10
+    mov cx, 99
+    cmp dx, 150
+    jne square_loop
+
+    mov ah, 0x00
+    int 0x16
+    jmp main_menu
 
 end_program:
     ;;end_pgm
     cli         ;clear interrups
     hlt         ;halt cpu == better than jmp $
 
-print_string:
-    mov ah, 0x0e
-    mov bh, 0x0
-    mov bl, 0x07
+;;Include
+    include './print/print_string.asm'
+    include './print/print_hex.asm'
+    include './print/print_registers.asm'
+    include './screen/reset_screen_txtm.asm'
+    include './screen/reset_screen_gfxm.asm'
 
-print_char:
-    mov al, [si]
-    cmp al, 0
-    je end_print
-    int 0x10
-    inc si
-    jmp print_char
-
-end_print:
-    ret
-
-menu_string:    db '<--------------->', 0xA, 0xD,'Welcome to bitOS!', 0xA, 0xD,0xA, 0xD, 0xA, 0xD, 0xA, 0xD, \
+;; Strings
+menu_string:    db '<--------------->', 0xA, 0xD,'Welcome to bitOS!', 0xA, 0xD, 0xA, 0xD, 0xA, 0xD,\
+                'Commands:',0xA, 0xD, 0xA, 0xD, \
                 'F> File Browser', 0xA, 0xD, \
-                'R> Reboot', 0xA, 0xD, 0
+                'R> Reboot', 0xA, 0xD,\
+                'G> Graphics test', 0xA, 0xD,\
+                'P> Print Register Values', 0xA, 0xD, \
+                'N> Halt CPU', 0xA, 0xD, 0
 
 success:        db 0xA, 0xD,'command executed successfully', 0xA, 0xD, 0
 
@@ -137,7 +170,14 @@ error:          db 0xA, 0xD,'command not found', 0xA, 0xD, 0
 file_table_header:  db '------------       ------',0xA, 0xD,\
                     'File\Program       Sector', 0xA, 0xD, \
                     '------------       ------', 0xA, 0xD, 0
+
+register_header:    db '-------- ---------------', 0xA, 0xD, \
+                    'Register Memory location', 0xA, 0xD, \
+                    '-------- ---------------', 0xA, 0xD, 0
+
+go_back:        db 0xA, 0xD, 0xA, 0xD,'Press any key to go back..',0xA, 0xD, 0xA, 0xD, 0
+
 cmd_string:     db ''
 
-
-    times 510-($-$$) db 0
+;; Fill-out
+    times 1024-($-$$) db 0

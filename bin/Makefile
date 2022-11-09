@@ -18,6 +18,6 @@ OS: boot_sector.bin file_table.bin kernel.bin
 	fasm ../src/file_table.asm
 	mv ../src/file_table.bin ./
 
-	cat boot_sector.bin file_table.bin kernel.bin > OS.bin
+	cat boot_sector.bin file_table.bin kernel.bin > bitOS.bin
 clean:
 	rm *.bin
