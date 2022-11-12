@@ -1,5 +1,9 @@
 # bitOS
 
+tiny x86 OS
+-----------
+!very early version!
+
 Requirements:
 
     -Linux/ git bash
