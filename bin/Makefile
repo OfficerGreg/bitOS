@@ -1,26 +1,27 @@
 
-#make os
-OS: boot_sector.bin file_table.bin kernel.bin calculator.bin
+# Create the OS.bin file (use 'Make OS')
+OS: boot_sector file_table kernel calculator
+	cat boot_sector.bin file_table.bin kernel.bin calculator.bin > OS.bin
 
-#make boot_sector
-#boot_sector:
+# Create bootsector binary file (use 'Make bootSect.bin')
+boot_sector:
 	fasm ../src/boot_sector.asm
 	mv ../src/boot_sector.bin ./
 	
-#make kernel
-#kernel:
-	fasm ../src/kernel.asm
-	mv ../src/kernel.bin ./
-
-
-#make file_table
-#file_table:
+# Create file table binary file (use 'Make fileTable.bin')
+file_table:
 	fasm ../src/file_table.asm
 	mv ../src/file_table.bin ./
 
+# Create kernel binary file (use 'Make kernel.bin')
+kernel:
+	fasm ../src/kernel.asm
+	mv ../src/kernel.bin ./
+
+calculator:
 	fasm ../src/calculator.asm
 	mv ../src/calculator.bin ./
 
-	cat boot_sector.bin file_table.bin kernel.bin calculator.bin > bitOS.bin
+# Clean up binary files (use 'Make clean')
 clean:
 	rm *.bin
