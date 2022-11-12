@@ -1,6 +1,6 @@
 
 #make os
-OS: boot_sector.bin file_table.bin kernel.bin
+OS: boot_sector.bin file_table.bin kernel.bin calculator.bin
 
 #make boot_sector
 #boot_sector:
@@ -18,6 +18,9 @@ OS: boot_sector.bin file_table.bin kernel.bin
 	fasm ../src/file_table.asm
 	mv ../src/file_table.bin ./
 
-	cat boot_sector.bin file_table.bin kernel.bin > bitOS.bin
+	fasm ../src/calculator.asm
+	mv ../src/calculator.bin ./
+
+	cat boot_sector.bin file_table.bin kernel.bin calculator.bin > bitOS.bin
 clean:
 	rm *.bin

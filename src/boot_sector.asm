@@ -32,7 +32,7 @@ read_disk1:
 
 read_disk2:
     mov ah, 0x02
-    mov al, 0x02        ;numbers of sectors to read
+    mov al, 0x03        ;numbers of sectors to read
     int 0x13
 
     jc read_disk2
@@ -46,7 +46,7 @@ read_disk2:
     mov gs, ax
     mov ss, ax
 
-    jmp 0x2000:0x0000
+    jmp 0x2000:0x0
 
     times 510-($-$$) db 0
 
