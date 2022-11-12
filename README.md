@@ -1,15 +1,17 @@
 # bitOS
 
 tiny x86 OS
------------
-!very early version!
+
+**!very early version!**
 
 Requirements:
+-----------
 
     -Linux/ git bash
     -bochs
 
 How to run:
+-----------
 
     run Makefile in Linux or with git bash
     run bochs
